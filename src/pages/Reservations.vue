@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <h2>This is second page</h2>
+    <div class="content">
+        <h2>This is reservations page</h2>
     </div>
 </template>
 

@@ -6,7 +6,7 @@
 <script>
 import Navbar from './components/layout/Navbar.vue';
 export default {
-    components: { Navbar }
+  components: { Navbar }
 }
 </script>
 
@@ -16,7 +16,14 @@ export default {
   font-family: Avanta Garde, sans-serif;
   margin: 0;
   padding: 0;
-  /* color: #fff;
-  background-color: #040d19; */
+}
+
+body {
+  color: #fff;
+  background-color: #040d19;
+}
+
+.content {
+  margin: 30px;
 }
 </style>

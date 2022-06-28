@@ -1,21 +1,21 @@
-import Main from "@/pages/Main";
-import Second from "@/pages/Second";
+import Vehicles from "@/pages/Vehicles";
+import Reservations from "@/pages/Reservations";
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   {
     path: "/",
-    component: Main,
+    component: Vehicles,
   },
   {
-    path: "/second",
-    component: Second,
+    path: "/reservations",
+    component: Reservations,
   },
 ];
 
 const router = createRouter({
   routes,
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
 });
 
 export default router;
