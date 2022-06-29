@@ -9,8 +9,8 @@
 
             <template #end>
                 <span class="p-input-icon-left">
-                    <i class="pi pi-search" />
-                    <InputText type="text" v-model="value3" placeholder="Search" />
+                    <!-- <i class="pi pi-search" />
+                    <InputText type="text" v-model="value3" placeholder="Search" /> -->
                 </span>
                 <Button class="btn" v-if="!isLoggedIn" label="Log in"></Button>
                 <Button class="btn" v-else label="Log out"></Button>
@@ -21,24 +21,22 @@
 
 <script>
 export default {
-    data() {
-        return {
-            active: 1,
-            items: [
-                {
-                    label: 'Vehicles',
-                    icon: 'pi pi-car',
-                    to: '/'
-                },
-                {
-                    label: 'Reservations',
-                    icon: 'pi pi-calendar',
-                    to: '/reservations'
-                }
-            ],
-            isLoggedIn: false
-        }
-    }
+    data: () => ({
+        active: 1,
+        items: [
+            {
+                label: 'Vehicles',
+                icon: 'pi pi-car',
+                to: '/'
+            },
+            {
+                label: 'Reservations',
+                icon: 'pi pi-calendar',
+                to: '/reservations'
+            }
+        ],
+        isLoggedIn: false
+    })
 }
 </script>
 
@@ -53,7 +51,7 @@ export default {
 }
 
 #rent {
-    color: #c4b5fd;
+    color: var(--primary-color);
 }
 
 .btn {

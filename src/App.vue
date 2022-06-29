@@ -11,7 +11,6 @@ export default {
 </script>
 
 <style>
-/* card #071426 */
 * {
   font-family: Avanta Garde, sans-serif;
   margin: 0;
