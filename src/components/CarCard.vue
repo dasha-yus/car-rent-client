@@ -19,7 +19,7 @@
             </div>
             <div class="card__bottom">
                 <h2>Price: {{ car.price }}$</h2>
-                <Button label="Reserve" />
+                <Button label="Reserve" @click.stop="reserve" />
             </div>
         </template>
     </Card>
@@ -31,7 +31,12 @@ export default {
         car: {
             type: Object
         }
-    }
+    },
+    methods: {
+        reserve: function () {
+            console.log("Clicked")
+        }
+    },
 }
 
 </script>
@@ -39,7 +44,7 @@ export default {
 <style scoped>
 .card {
     width: 21%;
-    margin: 30px;
+    margin: var(--var-default-margin);
 }
 
 .card__bottom {

@@ -7,8 +7,10 @@ import Menubar from "primevue/menubar";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import Card from "primevue/card";
-import Dropdown from 'primevue/dropdown';
-import InputNumber from 'primevue/inputnumber';
+import Dropdown from "primevue/dropdown";
+import InputNumber from "primevue/inputnumber";
+
+import Tooltip from "primevue/tooltip";
 
 import "primevue/resources/themes/lara-dark-purple/theme.css";
 import "primevue/resources/primevue.min.css";
@@ -24,6 +26,8 @@ app
   .component("Button", Button)
   .component("InputNumber", InputNumber)
   .component("Dropdown", Dropdown);
+
+app.directive("tooltip", Tooltip);
 
 app.use(router);
 app.mount("#app");

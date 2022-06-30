@@ -4,9 +4,10 @@
         <Dropdown v-model="selectedGearboxType" :options="gearboxTypes" placeholder="Select gearbox type" />
         <Dropdown v-model="selectedBrand" :options="brandsList" placeholder="Select brand" />
         <Dropdown v-model="selectedYear" :options="years" placeholder="Select year" />
-        <span class="p-input-icon-left">
+        <span class="p-input-icon-left p-input-icon-right">
             <i class="pi pi-search" />
             <InputText type="text" v-model="search" placeholder="Search" class="search" />
+            <i class="pi pi-times cross" v-tooltip="'Clear'" @click="clearSearch" />
         </span>
         <InputNumber v-model="price" showButtons mode="currency" currency="USD" :step="10" :min="0" :max="maxPrice" />
     </div>
@@ -47,11 +48,11 @@ export default {
             })
             .catch(err => console.log(err));
     },
-    // methods: {
-    //     myTest: function() {
-    //         console.log(this.price)
-    //     }
-    // },
+    methods: {
+        clearSearch: function() {
+            this.search = "";
+        }
+    },
     computed: {
         searchResult() {
             return [...this.cars].filter(car =>
@@ -66,19 +67,35 @@ export default {
             return this.searchResult.filter(car => car.price <= this.price);
         },
         filteredByBrand() {
-            if (!this.selectedBrand || this.selectedBrand === this.any) return this.filteredByPrice;
+            if(this.selectedBrand === this.any) {
+                this.selectedBrand = null;
+                return this.filteredByPrice;
+            }
+            if (!this.selectedBrand) return this.filteredByPrice;
             return this.filteredByPrice.filter(car => car.brand === this.selectedBrand);
         },
         filteredByClass() {
-            if (!this.selectedClass || this.selectedClass === this.any) return this.filteredByBrand;
+            if(this.selectedClass === this.any) {
+                this.selectedClass = null;
+                return this.filteredByBrand;
+            }
+            if (!this.selectedClass) return this.filteredByBrand;
             return this.filteredByBrand.filter(car => car.class === this.selectedClass);
         },
         filteredByYear() {
-            if (!this.selectedYear || this.selectedYear === this.any) return this.filteredByClass;
+            if(this.selectedYear === this.any) {
+                this.selectedYear = null;
+                return this.filteredByClass;
+            }
+            if (!this.selectedYear) return this.filteredByClass;
             return this.filteredByClass.filter(car => car.year === this.selectedYear);
         },
         filteredResult() {
-            if (!this.selectedGearboxType || this.selectedGearboxType === this.any) return this.filteredByYear;
+            if(this.selectedGearboxType === this.any) {
+                this.selectedGearboxType = null;
+                return this.filteredByYear;
+            }
+            if (!this.selectedGearboxType) return this.filteredByYear;
             return this.filteredByYear.filter(car => car.gearbox === this.selectedGearboxType);
         }
     }
@@ -88,17 +105,21 @@ export default {
 <style scoped>
 .cars {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-wrap: wrap;
 }
 
 .filters {
-    margin: 30px 30px 0 30px;
+    margin: 30px var(--var-default-margin) 0 var(--var-default-margin);
     display: flex;
     justify-content: space-between;
 }
 
 .search {
     width: 40vw;
+}
+
+.cross:hover {
+    cursor: pointer;
 }
 </style>

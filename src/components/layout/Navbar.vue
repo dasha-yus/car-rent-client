@@ -43,7 +43,7 @@ export default {
 <style scoped>
 .navbar {
     border-radius: 0;
-    padding: 10px 30px;
+    padding: 10px var(--var-default-margin);
 }
 
 .logo {

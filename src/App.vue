@@ -17,6 +17,10 @@ export default {
   padding: 0;
 }
 
+:root {
+  --var-default-margin: calc(16% / 8);
+}
+
 body {
   color: #fff;
   background-color: #040d19;
