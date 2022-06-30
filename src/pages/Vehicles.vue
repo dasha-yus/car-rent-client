@@ -11,10 +11,13 @@
         </span>
         <InputNumber v-model="price" showButtons mode="currency" currency="USD" :step="10" :min="0" :max="maxPrice" />
     </div>
-    <div class="cars">
+    <div class="cars" v-if="filteredResult.length !== 0">
         <car-card v-for="car in filteredResult" :car="car" />
     </div>
-
+    <div v-else class="no-results">
+        <h1>No matches</h1>
+        <h3>Please broaden your search</h3>
+    </div>
 </template>
 
 <script>
@@ -35,7 +38,7 @@ export default {
         selectedClass: null,
         selectedGearboxType: null,
         selectedYear: null,
-        any: "<any>"
+        any: "<any>",
     }),
     mounted() {
         axios.get("http://localhost:4000/cars")
@@ -49,7 +52,7 @@ export default {
             .catch(err => console.log(err));
     },
     methods: {
-        clearSearch: function() {
+        clearSearch: function () {
             this.search = "";
         }
     },
@@ -67,7 +70,7 @@ export default {
             return this.searchResult.filter(car => car.price <= this.price);
         },
         filteredByBrand() {
-            if(this.selectedBrand === this.any) {
+            if (this.selectedBrand === this.any) {
                 this.selectedBrand = null;
                 return this.filteredByPrice;
             }
@@ -75,7 +78,7 @@ export default {
             return this.filteredByPrice.filter(car => car.brand === this.selectedBrand);
         },
         filteredByClass() {
-            if(this.selectedClass === this.any) {
+            if (this.selectedClass === this.any) {
                 this.selectedClass = null;
                 return this.filteredByBrand;
             }
@@ -83,7 +86,7 @@ export default {
             return this.filteredByBrand.filter(car => car.class === this.selectedClass);
         },
         filteredByYear() {
-            if(this.selectedYear === this.any) {
+            if (this.selectedYear === this.any) {
                 this.selectedYear = null;
                 return this.filteredByClass;
             }
@@ -91,7 +94,7 @@ export default {
             return this.filteredByClass.filter(car => car.year === this.selectedYear);
         },
         filteredResult() {
-            if(this.selectedGearboxType === this.any) {
+            if (this.selectedGearboxType === this.any) {
                 this.selectedGearboxType = null;
                 return this.filteredByYear;
             }
@@ -121,5 +124,13 @@ export default {
 
 .cross:hover {
     cursor: pointer;
+}
+
+.no-results {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 </style>

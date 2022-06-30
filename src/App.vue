@@ -27,6 +27,6 @@ body {
 }
 
 .content {
-  margin: 30px;
+  margin: var(--var-default-margin);
 }
 </style>
