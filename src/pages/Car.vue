@@ -44,21 +44,19 @@
             </div>
         </div>
         <div class="cost"><img :src="car.image" :alt="car.model" />
-            <!-- <div> -->
-                <h2 class="title">Cost</h2>
-                <div class="price">
-                    <p><strong>Rent for the day:</strong></p>
-                    {{ car.price }}$
-                </div>
-                <div class="price">
-                    <p><strong>Rent for 7 days (-5%):</strong></p>
-                    {{ rentFor7Days }}$
-                </div>
-                <div class="price">
-                    <p><strong>Rent for 20 days (-15%):</strong></p>
-                    {{ rentFor20Days }}$
-                </div>
-            <!-- </div> -->
+            <h2 class="title">Cost</h2>
+            <div class="price">
+                <p><strong>Rent for the day:</strong></p>
+                {{ car.price }}$
+            </div>
+            <div class="price">
+                <p><strong>Rent for 7 days (-5%):</strong></p>
+                {{ rentFor7Days }}$
+            </div>
+            <div class="price">
+                <p><strong>Rent for 20 days (-15%):</strong></p>
+                {{ rentFor20Days }}$
+            </div>
             <Button class="btn" label="Reserve" />
         </div>
     </div>

@@ -43,7 +43,7 @@ export default {
     mounted() {
         axios.get("http://localhost:4000/cars")
             .then(res => {
-                this.cars = res.data;
+                this.cars = res.data.sort((a, b) => a.price - b.price);
                 this.brandsList = [this.any, ...new Set(res.data.map(car => car.brand))];
                 this.classesList = [this.any, ...new Set(res.data.map(car => car.class))];
                 this.gearboxTypes = [this.any, ...new Set(res.data.map(car => car.gearbox))];
