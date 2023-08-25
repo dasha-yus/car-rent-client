@@ -21,16 +21,20 @@
                 <h2>Price: {{ car.price }}$</h2>
                 <Button label="Reserve" @click.stop="reserve" v-if="!isAdmin" />
                 <div v-else>
-                    <Button label="Delete" @click.stop="removeCar" />
+                    <Button label="Delete" @click.stop="openDeleteConfirmationDialog" />
                 </div>
             </div>
         </template>
-        <confirm-dialogue ref="confirmDialogue"></confirm-dialogue>
     </Card>
+    <DeleteConfirmation :isDialogVisible="isDeleteConfirmationVisible" :name="car.brand + ' ' + car.model"
+        @switchIsDialogVisible="isDeleteConfirmationVisible = false" @onConfirm="removeCar" />
 </template>
 
 <script>
+import DeleteConfirmation from './modals/DeleteConfirmation.vue';
+
 export default {
+    components: { DeleteConfirmation },
     props: {
         car: {
             type: Object
@@ -39,6 +43,7 @@ export default {
     },
     data() {
         return {
+            isDeleteConfirmationVisible: false,
         };
     },
     methods: {
@@ -46,8 +51,12 @@ export default {
             console.log("Clicked")
         },
         removeCar() {
+            this.isDeleteConfirmationVisible = false
             this.$emit("removeCar", this.car._id)
-        }
+        },
+        openDeleteConfirmationDialog() {
+            this.isDeleteConfirmationVisible = true
+        },
     },
 }
 

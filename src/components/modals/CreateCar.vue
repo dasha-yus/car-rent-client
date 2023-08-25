@@ -1,5 +1,5 @@
 <template>
-    <Dialog v-model:visible="isDialogVisible" modal header="New car" :style="{ width: '50vw' }">
+    <Dialog :visible="isDialogVisible" modal header="New car" :style="{ width: '50vw' }">
         <form>
             <div class="form-group">
                 <InputText v-model="car.brand" type="text" placeholder="Brand" class="form-input" />

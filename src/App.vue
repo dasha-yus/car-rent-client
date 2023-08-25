@@ -37,4 +37,8 @@ body {
 .p-card-content {
     height: 100%;
 }
+
+.p-dialog-header-icons {
+  display: none !important;
+}
 </style>
