@@ -19,9 +19,13 @@
             </div>
             <div class="card__bottom">
                 <h2>Price: {{ car.price }}$</h2>
-                <Button label="Reserve" @click.stop="reserve" />
+                <Button label="Reserve" @click.stop="reserve" v-if="!isAdmin" />
+                <div v-else>
+                    <Button label="Delete" @click.stop="removeCar" />
+                </div>
             </div>
         </template>
+        <confirm-dialogue ref="confirmDialogue"></confirm-dialogue>
     </Card>
 </template>
 
@@ -30,11 +34,19 @@ export default {
     props: {
         car: {
             type: Object
-        }
+        },
+        isAdmin: Boolean,
+    },
+    data() {
+        return {
+        };
     },
     methods: {
-        reserve: function () {
+        reserve() {
             console.log("Clicked")
+        },
+        removeCar() {
+            this.$emit("removeCar", this.car._id)
         }
     },
 }

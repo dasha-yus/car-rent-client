@@ -5,12 +5,14 @@ import router from "./router/router";
 import PrimeVue from "primevue/config";
 import Menubar from "primevue/menubar";
 import InputText from "primevue/inputtext";
+import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import Card from "primevue/card";
 import Dropdown from "primevue/dropdown";
 import InputNumber from "primevue/inputnumber";
-
+import Checkbox from "primevue/checkbox";
 import Tooltip from "primevue/tooltip";
+import Toaster from '@meforma/vue-toaster';
 
 import "primevue/resources/themes/lara-dark-purple/theme.css";
 import "primevue/resources/primevue.min.css";
@@ -24,10 +26,15 @@ app
   .component("Card", Card)
   .component("InputText", InputText)
   .component("Button", Button)
+  .component("Dialog", Dialog)
   .component("InputNumber", InputNumber)
-  .component("Dropdown", Dropdown);
+  .component("Dropdown", Dropdown)
+  .component("Checkbox", Checkbox);
 
 app.directive("tooltip", Tooltip);
 
 app.use(router);
+app.use(Toaster, {
+  position: 'top-right'
+})
 app.mount("#app");

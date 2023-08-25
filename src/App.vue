@@ -29,4 +29,12 @@ body {
 .content {
   margin: var(--var-default-margin);
 }
+
+.p-card-body {
+    height: 100%;
+}
+
+.p-card-content {
+    height: 100%;
+}
 </style>

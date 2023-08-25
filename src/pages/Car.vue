@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import apiService from '@/services/apiService';
 
 export default {
     data: () => ({
@@ -72,10 +72,19 @@ export default {
             'before the car is received. Cancellations less than 24 hours in advance will be fully charged.'
     }),
     mounted() {
-        let self = this;
-        axios.get('http://localhost:4000/cars/' + this.$route.params.id)
-            .then(res => self.car = res.data)
-            .catch(err => console.log(err))
+        this.getCar();
+    },
+    methods: {
+        async getCar() {
+            try {
+                const res = await apiService.get('/cars/' + this.$route.params.id);
+                this.car = res.data
+            } catch (err) {
+                this.$toast.show('Failed to load car data', {
+                    type: 'error',
+                });
+            }
+        }
     },
     computed: {
         rentFor7Days() {
