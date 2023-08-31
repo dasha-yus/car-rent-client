@@ -12,14 +12,17 @@
                     <!-- <i class="pi pi-search" />
                     <InputText type="text" v-model="value3" placeholder="Search" /> -->
                 </span>
-                <Button class="btn" v-if="!isLoggedIn" label="Log in"></Button>
-                <Button class="btn" v-else label="Log out"></Button>
+                <Button class="btn" v-if="!checkUserLoggedIn" label="Log in" @click="redirectToLoginPage"></Button>
+                <Button class="btn" v-else label="Log out" @click="logOut"></Button>
             </template>
         </Menubar>
     </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+import * as authTypes from '../../store/modules/auth/auth-types';
+
 export default {
     data: () => ({
         active: 1,
@@ -35,8 +38,24 @@ export default {
                 to: '/reservations'
             }
         ],
-        isLoggedIn: false
-    })
+    }),
+    computed: {
+        checkUserLoggedIn() {
+            const storedToken = localStorage.getItem('Token');
+            return !!storedToken;
+        },
+    },
+    methods: {
+        ...mapActions({
+            getLogoutAction: authTypes.LOG_OUT
+        }),
+        async logOut() {
+            this.getLogoutAction();
+        },
+        redirectToLoginPage() {
+            this.$router.push('/login');
+        }
+    }
 }
 </script>
 
