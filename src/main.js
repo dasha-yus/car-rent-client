@@ -13,6 +13,9 @@ import Dropdown from "primevue/dropdown";
 import InputNumber from "primevue/inputnumber";
 import Checkbox from "primevue/checkbox";
 import Tooltip from "primevue/tooltip";
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Row from 'primevue/row';
 
 import Toaster from '@meforma/vue-toaster';
 
@@ -33,7 +36,10 @@ app
   .component("Dialog", Dialog)
   .component("InputNumber", InputNumber)
   .component("Dropdown", Dropdown)
-  .component("Checkbox", Checkbox);
+  .component("Checkbox", Checkbox)
+  .component("DataTable", DataTable)
+  .component("Column", Column)
+  .component("Row", Row);
 
 app.directive("tooltip", Tooltip);
 
