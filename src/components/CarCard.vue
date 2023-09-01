@@ -21,7 +21,7 @@
                 <h2>Price: {{ car.price }}$</h2>
                 <Button label="Reserve" @click.stop="reserve" v-if="!isAdmin" />
                 <div v-else>
-                    <Button label="Edit" @click.stop="" class="edit" />
+                    <Button label="Edit" @click.stop="onEditCar" class="edit" />
                     <Button label="Delete" @click.stop="openDeleteConfirmationDialog" />
                 </div>
             </div>
@@ -58,6 +58,9 @@ export default {
         openDeleteConfirmationDialog() {
             this.isDeleteConfirmationVisible = true
         },
+        onEditCar() {
+            this.$emit("onEditCar", this.car)
+        }
     },
 }
 

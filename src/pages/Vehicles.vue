@@ -16,14 +16,14 @@
                 <i class="pi pi-plus-circle add-icon" />
             </template></Card>
         <car-card v-for="car in filteredResult" :car="car" :isAdmin="isAuth && user.isAdmin"
-            v-if="filteredResult.length !== 0" @removeCar="deleteCar" />
+            v-if="filteredResult.length !== 0" @removeCar="deleteCar" @onEditCar="setSelectedCar" />
         <div v-else class="no-results">
             <h1>No matches</h1>
             <h3>Please broaden your search</h3>
         </div>
     </div>
-    <create-car :isDialogVisible="isDialogVisible" @switchIsDialogVisible="isDialogVisible = false"
-        @onCarAdded="onCarAdded" />
+    <create-car :isDialogVisible="isDialogVisible" :carToEdit="selectedCar" @switchIsDialogVisible="onCancelCreatingCar"
+        @onCarAdded="onCarAdded" @onCarUpdated="onCarUpdated" />
 </template>
 
 <script>
@@ -48,6 +48,7 @@ export default {
             selectedYear: null,
             any: "<any>",
             isDialogVisible: false,
+            selectedCar: null
         };
     },
     mounted() {
@@ -84,8 +85,20 @@ export default {
                 });
             }
         },
+        onCancelCreatingCar() {
+            this.selectedCar = null;
+            this.isDialogVisible = false;
+        },
+        setSelectedCar(car) {
+            this.selectedCar = car;
+            this.isDialogVisible = true;
+        },
         onCarAdded() {
-            this.getAllCars()
+            this.getAllCars();
+        },
+        onCarUpdated() {
+            this.selectedCar = null;
+            this.getAllCars();
         }
 
     },

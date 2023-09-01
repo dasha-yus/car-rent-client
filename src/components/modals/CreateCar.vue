@@ -116,6 +116,22 @@ export default {
     setup() {
         return { v$: useVuelidate() }
     },
+    updated() {
+        this.car = this.carToEdit ? this.carToEdit : {
+            brand: "",
+            model: "",
+            class: "",
+            gearbox: "",
+            fuel: "",
+            year: "",
+            price: "",
+            doors: 4,
+            seats: 4,
+            power: "",
+            image: "",
+            conditioner: false,
+        };
+    },
     data() {
         return {
             car: {
@@ -137,6 +153,37 @@ export default {
             fuelTypes: ['hybrid', 'petrol', 'diesel', 'electro'],
             currentYear: new Date().getFullYear(),
         }
+    },
+    props: {
+        isDialogVisible: Boolean,
+        carToEdit: {
+            type: Object,
+            required: false
+        }
+    },
+    methods: {
+        switchIsDialogVisible() {
+            this.$emit('switchIsDialogVisible')
+        },
+        async submitForm() {
+            const validationResult = await this.v$.$validate()
+            if (!validationResult) {
+                return
+            }
+            try {
+                const res = this.carToEdit ? await apiService.put(`/cars/${this.carToEdit._id}`, this.car) : await apiService.post('/cars', this.car);
+                this.$toast.show(`${res.data.brand} ${res.data.model} was successfully ${this.carToEdit ? 'updated' : 'added'}`, {
+                    type: 'success',
+                });
+                this.$emit(this.carToEdit ? 'onCarUpdated' : 'onCarAdded');
+                this.$emit('switchIsDialogVisible');
+            } catch (err) {
+                const message = this.carToEdit ? 'Failed to updated selected car' : 'Failed to add a new car'
+                this.$toast.show(message, {
+                    type: 'error',
+                });
+            }
+        },
     },
     validations() {
         return {
@@ -185,32 +232,6 @@ export default {
                 }
             },
         }
-    },
-    props: {
-        isDialogVisible: Boolean,
-    },
-    methods: {
-        switchIsDialogVisible() {
-            this.$emit('switchIsDialogVisible')
-        },
-        async submitForm() {
-            const validationResult = await this.v$.$validate()
-            if (!validationResult) {
-                return
-            }
-            try {
-                const res = await apiService.post('/cars', this.car);
-                this.$toast.show(`${res.data.brand} ${res.data.model} was successfully added`, {
-                    type: 'success',
-                });
-                this.$emit('onCarAdded');
-                this.$emit('switchIsDialogVisible');
-            } catch (err) {
-                this.$toast.show('Failed to add a new car', {
-                    type: 'error',
-                });
-            }
-        },
     },
 }
 </script>
