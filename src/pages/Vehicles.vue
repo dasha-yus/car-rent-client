@@ -12,11 +12,11 @@
         <InputNumber v-model="price" showButtons mode="currency" currency="USD" :step="10" :min="0" :max="maxPrice" />
     </div>
     <div class="cars">
-        <Card class="card" @click="isDialogVisible = true" v-if="isAdmin"><template #content class="content">
+        <Card class="card" @click="isDialogVisible = true" v-if="isAuth && user.isAdmin"><template #content class="content">
                 <i class="pi pi-plus-circle add-icon" />
             </template></Card>
-        <car-card v-for="car in filteredResult" :car="car" :isAdmin="isAdmin" v-if="filteredResult.length !== 0"
-            @removeCar="deleteCar" />
+        <car-card v-for="car in filteredResult" :car="car" :isAdmin="isAuth && user.isAdmin"
+            v-if="filteredResult.length !== 0" @removeCar="deleteCar" />
         <div v-else class="no-results">
             <h1>No matches</h1>
             <h3>Please broaden your search</h3>
@@ -48,7 +48,6 @@ export default {
             selectedYear: null,
             any: "<any>",
             isDialogVisible: false,
-            isAdmin: true,
         };
     },
     mounted() {
@@ -91,6 +90,12 @@ export default {
 
     },
     computed: {
+        isAuth() {
+            return this.$store.state.auth.isAuthenticated;
+        },
+        user() {
+            return this.$store.state.auth.user;
+        },
         searchResult() {
             return [...this.cars].filter(car =>
                 car.brand.toLowerCase().includes(this.search.toLowerCase()) ||

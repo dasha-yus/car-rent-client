@@ -1,14 +1,14 @@
 import * as types from "./auth-types";
-import axios from "axios";
-import events from "../../../plugins/events";
 import router from "../../../router/router";
-import interceptor from "../../../plugins/interceptor";
 import apiService from "@/services/apiService";
+import { createToaster } from "@meforma/vue-toaster";
+
+const toaster = createToaster();
 
 const state = {
-  token: null,
-  isAuthenticated: false,
-  profileData: null,
+  token: localStorage.getItem("token"),
+  isAuthenticated: !!localStorage.getItem("token"),
+  user: JSON.parse(atob(localStorage.getItem('user') || '') || '""'),
 };
 
 const getters = {
@@ -19,7 +19,7 @@ const getters = {
     return state.isAuthenticated;
   },
   [types.GET_PROFILE_DATA]: (state) => {
-    return state.profileData;
+    return state.user;
   },
 };
 
@@ -31,21 +31,34 @@ const mutations = {
   [types.LOG_OUT_SUCCESS]: (state) => {
     state.token = null;
     state.isAuthenticated = false;
-    state.profileData = null;
+    state.user = null;
   },
   [types.SET_PROFILE_DATA]: (state, payload) => {
-    state.profileData = payload;
+    state.user = payload;
   },
 };
 
 const actions = {
   [types.REGISTER_USER]: ({ commit }, payload) => {
-    const baseUrl = "http://localhost:4000";
-    let url = baseUrl + "accounts/api/register";
-    axios
-      .post(url, payload)
-      .then((response) => {})
-      .catch((err) => {});
+    apiService
+      .post("auth/signup", payload)
+      .then((response) => {
+        commit(types.SET_TOKEN, response.data.token);
+        commit(types.SET_PROFILE_DATA, response.data);
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem('user', btoa(JSON.stringify(response.data)));
+        toaster.show("You have been registered successfully", {
+          position: "top-right",
+          type: "success",
+        });
+        router.push("/cars");
+      })
+      .catch((err) => {
+        toaster.show(err.response.data.message || err.message, {
+          position: "top-right",
+          type: "error",
+        });
+      });
   },
 
   // Action for logging in user
@@ -54,12 +67,16 @@ const actions = {
       .post("auth/login", payload)
       .then((response) => {
         commit(types.SET_TOKEN, response.data.token);
-        localStorage.setItem("Token", response.data.token);
-        localStorage.setItem("userId", response.data._id);
+        commit(types.SET_PROFILE_DATA, response.data);
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem('user', btoa(JSON.stringify(response.data)));
         router.push("/cars");
       })
       .catch((err) => {
-        console.log(err.message);
+        toaster.show(err.response.data.message || err.message, {
+          position: "top-right",
+          type: "error",
+        });
       });
   },
 
@@ -67,37 +84,10 @@ const actions = {
   [types.LOG_OUT]: ({ commit }) => {
     commit(types.LOG_OUT_SUCCESS);
     try {
-      localStorage.removeItem("Token");
+      localStorage.removeItem("token");
       localStorage.removeItem("userId");
-    } catch (err) {
-      console.error(err);
-    }
-    router.push("/login");
-  },
-
-  // Action to check if the user is authenticated once user refreshes the page.
-  [types.CHECK_USER_AUTHENTICATION]: ({ commit }) => {
-    try {
-      let storedToken = localStorage.getItem("Token");
-      if (storedToken) {
-        commit(types.SET_TOKEN, storedToken);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  },
-
-  // Get the profile data of the user
-  [types.GET_PROFILE_DATA_ACTION]: ({ commit }) => {
-    let url = "users/profile";
-    interceptor
-      .get(url)
-      .then((response) => {
-        commit(types.SET_PROFILE_DATA, response);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+      router.push("/login");
+    } catch (err) {}
   },
 };
 

@@ -1,6 +1,7 @@
 <template>
     <div>
-        <Menubar :model="items" v-model:activeIndex="active" class="navbar">
+        <Menubar :model="isAuth && user.isAdmin ? items : items.filter(item => item.label !== 'Users')"
+            v-model:activeIndex=" active " class="navbar">
             <template #start>
                 <router-link to="/" class="link">
                     <h3 class="logo">Car<span id="rent">Rent</span></h3>
@@ -8,12 +9,11 @@
             </template>
 
             <template #end>
-                <span class="p-input-icon-left">
-                    <!-- <i class="pi pi-search" />
-                    <InputText type="text" v-model="value3" placeholder="Search" /> -->
-                </span>
-                <Button class="btn" v-if="!checkUserLoggedIn" label="Log in" @click="redirectToLoginPage"></Button>
-                <Button class="btn" v-else label="Log out" @click="logOut"></Button>
+                <Button class="btn" v-if="!isAuth" label="Log in" @click=" redirectToLoginPage "></Button>
+                <div v-if=" isAuth && user" class="end">
+                    <p>Welcome, {{ user.firstName }}!</p>
+                    <Button class="btn" label="Log out" @click=" logOut "></Button>
+                </div>
             </template>
         </Menubar>
     </div>
@@ -36,14 +36,21 @@ export default {
                 label: 'Reservations',
                 icon: 'pi pi-calendar',
                 to: '/reservations'
+            },
+            {
+                label: 'Users',
+                icon: 'pi pi-users',
+                to: '/users'
             }
         ],
     }),
     computed: {
-        checkUserLoggedIn() {
-            const storedToken = localStorage.getItem('Token');
-            return !!storedToken;
+        isAuth() {
+            return this.$store.state.auth.isAuthenticated;
         },
+        user() {
+            return this.$store.state.auth.user;
+        }
     },
     methods: {
         ...mapActions({
@@ -80,5 +87,11 @@ export default {
 .link {
     color: #fff;
     text-decoration: none;
+}
+
+.end {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 </style>

@@ -21,6 +21,7 @@
                 <h2>Price: {{ car.price }}$</h2>
                 <Button label="Reserve" @click.stop="reserve" v-if="!isAdmin" />
                 <div v-else>
+                    <Button label="Edit" @click.stop="" class="edit" />
                     <Button label="Delete" @click.stop="openDeleteConfirmationDialog" />
                 </div>
             </div>
@@ -103,5 +104,9 @@ export default {
 
 .info p {
     margin-top: 5px;
+}
+
+.edit {
+    margin-right: 10px;
 }
 </style>

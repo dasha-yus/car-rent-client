@@ -13,35 +13,54 @@
                         <div class="form-group">
                             <span class="p-input-icon-left form-input">
                                 <i class="pi pi-user" />
-                                <InputText v-model="user.firstname" placeholder="First name" class="form-input" />
+                                <InputText v-model="user.firstname" placeholder="First name" class="form-input"
+                                    :class="{ error: v$.user.firstname.$errors.length }" />
                             </span>
+                            <div class="input-errors" v-for="error of v$.user.firstname.$errors" :key="error.$uid">
+                                <div class="error-msg">{{ error.$message }}</div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <span class="p-input-icon-left form-input">
                                 <i class="pi pi-user" />
-                                <InputText v-model="user.lastname" placeholder="Last name" class="form-input" />
+                                <InputText v-model="user.lastname" placeholder="Last name" class="form-input"
+                                    :class="{ error: v$.user.lastname.$errors.length }" />
                             </span>
+                            <div class="input-errors" v-for="error of v$.user.lastname.$errors" :key="error.$uid">
+                                <div class="error-msg">{{ error.$message }}</div>
+                            </div>
                         </div>
                     </template>
                     <div class="form-group">
                         <span class="p-input-icon-left form-input">
                             <i class="pi pi-envelope" />
-                            <InputText v-model="user.email" placeholder="Email" class="form-input" />
+                            <InputText v-model="user.email" placeholder="Email" class="form-input"
+                                :class="{ error: v$.user.email.$errors.length }" />
                         </span>
+                        <div class="input-errors" v-for="error of v$.user.email.$errors" :key="error.$uid">
+                            <div class="error-msg">{{ error.$message }}</div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <span class="p-input-icon-left form-input">
                             <i class="pi pi-lock" />
-                            <InputText v-model="user.password" placeholder="Password" class="form-input" type="password" />
+                            <InputText v-model="user.password" placeholder="Password" class="form-input" type="password"
+                                :class="{ error: v$.user.password.$errors.length }" />
                         </span>
+                        <div class="input-errors" v-for="error of v$.user.password.$errors" :key="error.$uid">
+                            <div class="error-msg">{{ error.$message }}</div>
+                        </div>
                     </div>
                     <template v-if="selectedTab === 2">
                         <div class="form-group">
                             <span class="p-input-icon-left form-input">
                                 <i class="pi pi-lock" />
                                 <InputText v-model="user.confirmPassword" placeholder="Confirm password" class="form-input"
-                                    type="password" />
+                                    type="password" :class="{ error: v$.user.confirmPassword.$errors.length }" />
                             </span>
+                            <div class="input-errors" v-for="error of v$.user.confirmPassword.$errors" :key="error.$uid">
+                                <div class="error-msg">{{ error.$message }}</div>
+                            </div>
                         </div>
                     </template>
                     <Button label="Submit" @click="selectedTab === 1 ? signIn() : signUp()" class="btn" />
@@ -57,8 +76,13 @@
 <script>
 import { mapActions } from 'vuex';
 import * as authTypes from '../store/modules/auth/auth-types';
+import useVuelidate from '@vuelidate/core'
+import { required, email, minLength, helpers } from '@vuelidate/validators'
 
 export default {
+    setup() {
+        return { v$: useVuelidate() }
+    },
     data: () => ({
         selectedTab: 1,
         user: {
@@ -71,28 +95,64 @@ export default {
     }),
     methods: {
         ...mapActions({
-            getLoginAction: authTypes.SET_TOKEN_ACTION
+            getLoginAction: authTypes.SET_TOKEN_ACTION,
+            getSignUpAction: authTypes.REGISTER_USER,
         }),
         switchSelectedTab(tab) {
             this.selectedTab = tab;
         },
         async signIn() {
+            const validationResult = await this.v$.$validate()
+            if (!validationResult) {
+                return
+            }
             const user = {
                 email: this.user.email,
                 password: this.user.password,
             }
             await this.getLoginAction(user);
         },
-        signUp() {
-            const userData = {
-                firstname: this.user.firstname,
-                lastname: this.user.lastname,
+        async signUp() {
+            const validationResult = await this.v$.$validate()
+            if (!validationResult) {
+                return
+            }
+            const newUser = {
+                firstName: this.user.firstname,
+                lastName: this.user.lastname,
                 email: this.user.email,
                 password: this.user.password,
             }
-            console.log(userData)
+            await this.getSignUpAction(newUser);
         }
-    }
+    },
+    validations() {
+        const passwordIsSame = (password) => {
+            return password === this.user.password;
+        };
+
+        return {
+            user: {
+                firstname: {
+                    required: this.selectedTab === 2
+                },
+                lastname: {
+                    required: this.selectedTab === 2
+                },
+                email: {
+                    required, email
+                },
+                password: {
+                    required,
+                    min: minLength(6)
+                },
+                confirmPassword: {
+                    required: this.selectedTab === 2,
+                    sameAsPassword: this.selectedTab === 2 && helpers.withMessage('Passwords do not match', passwordIsSame)
+                }
+            },
+        }
+    },
 }
 </script>
 
@@ -169,5 +229,15 @@ export default {
 .btn {
     margin-top: 20px;
     width: 100%;
+}
+
+.error {
+    border: 1px solid rgb(241, 120, 120);
+}
+
+.error-msg {
+    font-size: 12px;
+    color: rgb(241, 120, 120);
+    margin-top: 10px;
 }
 </style>
