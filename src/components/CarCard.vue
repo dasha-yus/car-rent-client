@@ -19,7 +19,7 @@
             </div>
             <div class="card__bottom">
                 <h2>Price: {{ car.price }}$</h2>
-                <Button label="Reserve" @click.stop="reserve" v-if="!isAdmin" />
+                <Button label="Reserve" @click.stop="reserve" v-if="!isAdmin" :disabled="!isAuth" />
                 <div v-else>
                     <Button label="Edit" @click.stop="onEditCar" class="edit" />
                     <Button label="Delete" @click.stop="openDeleteConfirmationDialog" />
@@ -41,6 +41,7 @@ export default {
             type: Object
         },
         isAdmin: Boolean,
+        isAuth: Boolean,
     },
     data() {
         return {
@@ -49,7 +50,7 @@ export default {
     },
     methods: {
         reserve() {
-            console.log("Clicked")
+            this.$emit("onAddReservation", this.car._id)
         },
         removeCar() {
             this.isDeleteConfirmationVisible = false

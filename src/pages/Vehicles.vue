@@ -16,7 +16,8 @@
                 <i class="pi pi-plus-circle add-icon" />
             </template></Card>
         <car-card v-for="car in filteredResult" :car="car" :isAdmin="isAuth && user.isAdmin"
-            v-if="filteredResult.length !== 0" @removeCar="deleteCar" @onEditCar="setSelectedCar" />
+            :isAuth="isAuth && !user.isAdmin" v-if="filteredResult.length !== 0" @removeCar="deleteCar"
+            @onEditCar="setSelectedCar" @onAddReservation="onAddReservation" />
         <div v-else class="no-results">
             <h1>No matches</h1>
             <h3>Please broaden your search</h3>
@@ -24,15 +25,17 @@
     </div>
     <create-car :isDialogVisible="isDialogVisible" :carToEdit="selectedCar" @switchIsDialogVisible="onCancelCreatingCar"
         @onCarAdded="onCarAdded" @onCarUpdated="onCarUpdated" />
+    <add-reservation :isDialogVisible="isReservationDialogVisible" :carId="carId" @switchIsDialogVisible="onCancelReservation" />
 </template>
 
 <script>
 import apiService from '../services/apiService';
 import CarCard from '@/components/CarCard.vue';
 import CreateCar from '@/components/modals/CreateCar.vue';
+import AddReservation from '@/components/modals/AddReservation.vue';
 
 export default {
-    components: { CarCard, CreateCar },
+    components: { CarCard, CreateCar, AddReservation },
     data() {
         return {
             cars: [],
@@ -48,7 +51,9 @@ export default {
             selectedYear: null,
             any: "<any>",
             isDialogVisible: false,
-            selectedCar: null
+            selectedCar: null,
+            isReservationDialogVisible: false,
+            carId: '',
         };
     },
     mounted() {
@@ -85,9 +90,17 @@ export default {
                 });
             }
         },
+        onAddReservation(id) {
+            this.carId = id;
+            this.isReservationDialogVisible = true;
+        },
         onCancelCreatingCar() {
             this.selectedCar = null;
             this.isDialogVisible = false;
+        },
+        onCancelReservation() {
+            this.selectedCar = null;
+            this.isReservationDialogVisible = false;
         },
         setSelectedCar(car) {
             this.selectedCar = car;

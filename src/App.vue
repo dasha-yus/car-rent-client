@@ -31,14 +31,22 @@ body {
 }
 
 .p-card-body {
-    height: 100%;
+  height: 100%;
 }
 
 .p-card-content {
-    height: 100%;
+  height: 100%;
 }
 
 .p-dialog-header-icons {
   display: none !important;
+}
+
+.vc-header .vc-arrow,
+.vc-header .vc-title,
+.vc-nav-arrow,
+.vc-nav-title,
+.vc-nav-item {
+  background: none !important;
 }
 </style>

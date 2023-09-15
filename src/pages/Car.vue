@@ -57,19 +57,24 @@
                 <p><strong>Rent for 20 days (-15%):</strong></p>
                 {{ rentFor20Days }}$
             </div>
-            <Button class="btn" label="Reserve" />
+            <Button class="btn" label="Reserve" :disabled="!isAuth" @click="isReservationDialogVisible = true" />
         </div>
     </div>
+    <add-reservation :isDialogVisible="isReservationDialogVisible" :carId="car._id"
+        @switchIsDialogVisible="isReservationDialogVisible = false" />
 </template>
 
 <script>
 import apiService from '@/services/apiService';
+import AddReservation from '@/components/modals/AddReservation.vue';
 
 export default {
+    components: { AddReservation },
     data: () => ({
         car: {},
         tooltip: 'We will refund the entire paid advance if the order is canceled more than 24 hours ' +
-            'before the car is received. Cancellations less than 24 hours in advance will be fully charged.'
+            'before the car is received. Cancellations less than 24 hours in advance will be fully charged.',
+        isReservationDialogVisible: false,
     }),
     mounted() {
         this.getCar();
@@ -92,7 +97,13 @@ export default {
         },
         rentFor20Days() {
             return Math.floor(this.car.price * 0.85 * 20);
-        }
+        },
+        isAuth() {
+            return this.$store.state.auth.isAuthenticated;
+        },
+        user() {
+            return this.$store.state.auth.user;
+        },
     }
 }
 </script>
